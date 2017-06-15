@@ -68,7 +68,7 @@ app.post('/sms-webhook', (req,res)=>{
     twiml.message('\U0001F44D');
 
   } else {
-    twiml.message('Sorry I didn\'t get that \U0001F44D');
+    twiml.message('Sorry I didn\'t get that \u1F44D');
   }
 
   optimizelyClient.track("sent_msg", userId);
