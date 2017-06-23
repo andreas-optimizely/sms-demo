@@ -40,6 +40,8 @@ app.post('/sms-webhook', (req,res)=>{
   let fromNumber = req.body.From;
   let variation;
 
+  console.log(fromNumber);
+  
   if(msg === "hello" || msg ==='hi' || msg ==='hey'){
     
     let response = 'Hey I know this is our first time, my job is to make your life easier, how can I help you?';
@@ -64,11 +66,8 @@ app.post('/sms-webhook', (req,res)=>{
     }
 
     twiml.message(response);
-  } else if (msg == '\U0001F44D'){
-    twiml.message('\U0001F44D');
-
-  } else {
-    twiml.message('Sorry I didn\'t get that \u{1F4A9}');
+  else {
+    twiml.message('Sorry I didn\'t get that, try asking something like "');
   }
 
   optimizelyClient.track("sent_msg", userId);
