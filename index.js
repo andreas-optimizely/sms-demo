@@ -39,8 +39,9 @@ app.post('/sms-webhook', (req,res)=>{
   let userId = uuid();
   let fromNumber = req.body.From;
   let variation;
+
   console.log(req.body);
-  
+  console.log('Update');
   console.log(fromNumber);
 
   if(msg === "hello" || msg ==='hi' || msg ==='hey'){
