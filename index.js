@@ -1,16 +1,23 @@
 'use strict';
+require('dotenv').config();
+
 const         express = require('express'),
+                path  = require('path'),
                twilio = require('twilio'),
            bodyParser = require('body-parser'),
                  uuid = require('uuid/v4'),
            optimizely = require('optimizely-server-sdk'),
   defaultErrorHandler = require('optimizely-server-sdk/lib/plugins/error_handler'),
         defaultLogger = require('optimizely-server-sdk/lib/plugins/logger'),
-              request = require('request-promise');
+              request = require('request-promise'),
+              sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 const app = express();
 const projectId = '8430132013';
 const datafileUrl = `https://cdn.optimizely.com/json/${projectId}.json`;
+const views = path.join(__dirname, "views");
+
+
 
 let optimizelyClient;
 
@@ -25,9 +32,35 @@ request({uri: datafileUrl, json: true}).then((datafile) => {
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('views'));
 
 app.get('/', (req, res) => {
-  res.send('SMS Full Stack Bot');
+  let homeView = path.join(views, "form.html");
+  res.sendFile(homeView);
+});
+
+
+app.post('/send-message', (req, res)=>{
+  console.log(req.body);
+  let email  = req.body.email,
+      helper = require('sendgrid').mail,
+      from_email = new helper.Email('andreas@optimizely.com', 'Andreas'),
+      to_email = new helper.Email(email),
+      subject = "Heres a message",
+      content = new helper.Content("text/html", '<html><div align="center" style="max-width:580px; margin:0 auto;"><a href="https://www.capitalone.com/#userid=' + encodeURIComponent(email) + '"><h1>Hello!</h1><img style="width:100%; margin:0 auto;" src="http://bestanimations.com/Animals/Mammals/Dogs/puppies/adorable-cute-funny-dog-puppy-animated-gif-47.gif"></a></div></html>'),
+      mail = new helper.Mail(from_email, subject, to_email, content);
+
+  var request = sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: mail.toJSON()
+  });
+
+  sg.API(request, function(error, response) {
+    console.log('ERROR ', error);
+    console.log('RESPONSE ', response);
+    return response ? res.sendStatus(204) : res.sendStatus(500);
+  });
 });
 
 // Webhook URL for SMS

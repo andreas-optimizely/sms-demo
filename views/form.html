@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <h1>Submit an email address</h1>
+  <form>
+    <label>Enter an email address</label>
+    <input type="email" name="email" id="email">
+    <button id="submit">Submit</button>
+  </form>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $('#submit').on('click', function(event){
+      event.preventDefault();
+      var email = $('#email').val();
+      $.post('/send-message', {email:email}, function(data){
+        console.log('SENT SUCCESSFULLY');
+      });
+    })
+  </script>
+</body>
+</html>
