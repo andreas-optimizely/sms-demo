@@ -5,6 +5,7 @@
 </head>
 <body>
   <h1>Submit an email address</h1>
+  <div id="msg"></div>
   <form>
     <label>Enter an email address</label>
     <input type="email" name="email" id="email">
@@ -19,7 +20,8 @@
       event.preventDefault();
       var email = $('#email').val();
       $.post('/send-message', {email:email}, function(data){
-        console.log('SENT SUCCESSFULLY');
+        $('#msg').append('<span style="color: green">Message Sent Successfully!</span>');
+        $('#email').val('');
       });
     })
   </script>
