@@ -15,6 +15,7 @@ function getHashValue(key) {
 }
 
 function trackEvent(selector, event, userId){
+  console.log('redirect removed');
   console.log('tracking event init ', selector);
   setTimeout(function(){
     let element = document.querySelector(selector);
