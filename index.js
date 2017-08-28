@@ -13,11 +13,10 @@ const         express = require('express'),
               sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 const app = express();
-const projectId = '8430132013';
+const projectId = '8410977336';
 const datafileUrl = `https://cdn.optimizely.com/json/${projectId}.json`;
 const views = path.join(__dirname, "views");
-
-
+const build = path.join(__dirname, "build");
 
 let optimizelyClient;
 
@@ -33,22 +32,35 @@ request({uri: datafileUrl, json: true}).then((datafile) => {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('views'));
+app.use(express.static('build'));
 
 app.get('/', (req, res) => {
   let homeView = path.join(views, "form.html");
   res.sendFile(homeView);
 });
 
-
 app.post('/send-message', (req, res)=>{
-  console.log(req.body);
   let email  = req.body.email,
+      variation = optimizelyClient.activate('email_subject_test', email),
       helper = require('sendgrid').mail,
       from_email = new helper.Email('andreas@optimizely.com', 'Andreas'),
       to_email = new helper.Email(email),
-      subject = "Heres a message",
-      content = new helper.Content("text/html", '<html><div align="center" style="max-width:580px; margin:0 auto;"><a href="https://www.capitalone.com/#userid=' + encodeURIComponent(email) + '"><h1>Hello!</h1><img style="width:100%; margin:0 auto;" src="http://bestanimations.com/Animals/Mammals/Dogs/puppies/adorable-cute-funny-dog-puppy-animated-gif-47.gif"></a></div></html>'),
-      mail = new helper.Mail(from_email, subject, to_email, content);
+      subject,
+      content;
+
+  console.log(email);
+  console.log(encodeURIComponent(email))
+  console.log(variation);
+
+  if(variation === "default"){
+    subject = 'Never Miss a Payment Again. Introducing The Capital One Unique Card!';
+    content = new helper.Content("text/html", '<html><div align="center" style="max-width:580px; margin:0 auto;"><img style="width:100%; margin:0 auto;" src="https://www.capitaloneonline.co.uk/CapitalOne_Consumer/images/capitalone_banner.jpg"><p>Tired of other banks, who thrive on your late fees? Come on over to the Capital One Unique Card, where we always alert you before you miss a payment. <a href="https://www.capitalone.com/#userid=' + email + '">Apply now!</a></p></div></html>');
+  } else if(variation === "variation"){
+    subject = 'Your Unique Card Offer is Waiting!';
+    content = new helper.Content("text/html", '<html><div align="center" style="max-width:580px; margin:0 auto;"><img style="width:100%; margin:0 auto;" src="https://www.capitaloneonline.co.uk/CapitalOne_Consumer/images/capitalone_banner.jpg"><p>Never miss a payment again, with the Capital One Unique Card’s built in payment and credit limit alerts. Your financial well being is our business. Click <a href="https://www.capitalone.com/#userid=' + email + '">here</a> to learn more about how Capital One has your back!</p></div></html>');
+  }
+
+  let mail = new helper.Mail(from_email, subject, to_email, content);
 
   var request = sg.emptyRequest({
     method: 'POST',
