@@ -22,7 +22,7 @@ function trackEvent(selector, event, userId){
       e.preventDefault();
       console.log('clicked! ', userId);
       optimizelyClient.track(event, userId);
-      return window.location = element.href;
+      // return window.location = element.href;
     });
   }, 3000)
 }

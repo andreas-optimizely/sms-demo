@@ -126,6 +126,9 @@ app.post('/sms-webhook', (req,res)=>{
   res.end(twiml.toString());
 });
 
+app.get('/email-tracking', (req, res)=>{
+  console.log(req.query.email);
+})
 app.listen(process.env.PORT || 3000, function(){
   console.log("Up and running - check localhost:3000 for local dev");
 });
