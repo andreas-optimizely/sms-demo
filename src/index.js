@@ -15,17 +15,18 @@ function getHashValue(key) {
 }
 
 function trackEvent(selector, event, userId){
-  console.log('redirect removed');
-  console.log('tracking event init ', selector);
   setTimeout(function(){
-    let element = document.querySelector(selector);
-    element.addEventListener('click', function(e){
-      e.preventDefault();
-      console.log('clicked! ', userId);
-      optimizelyClient.track(event, userId);
-      // return window.location = element.href;
-    });
-  }, 3000)
+    let elements = document.querySelectorAll(selector);
+    for(var i = 0; i<elements.length; i++){
+      elements[i].addEventListener('click', function(e){
+        e.preventDefault();
+        optimizelyClient.track(event, userId);
+        setTimeout(function(){
+          return window.location = e.target.href;
+        }, 500);
+      });
+    }
+  }, 2000);
 }
 
-trackEvent('#bannerBtn', 'website_action', getHashValue('userid'));
+trackEvent('.c1-button', 'website_action', getHashValue('userid'));

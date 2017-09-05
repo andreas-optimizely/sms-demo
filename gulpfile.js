@@ -13,7 +13,7 @@ function compile(){
 
   bundler.bundle()
     .on('error', (err) => { console.error(err); this.emit('end'); })
-    .pipe(source('build.js'))
+    .pipe(source('full-build.js'))
     .pipe(buffer())
     //.pipe(uglify())
     .pipe(gulp.dest('./build'));

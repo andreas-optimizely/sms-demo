@@ -88,13 +88,14 @@ app.post('/sms-webhook', (req,res)=>{
   console.log(req.body);
   console.log('Update');
   console.log(fromNumber);
+  console.log(userId);
 
   if(msg === "hello" || msg ==='hi' || msg ==='hey'){
     
     let response = 'Hey I know this is our first time, my job is to make your life easier, how can I help you?';
     variation = optimizelyClient.activate('introduction_experiment', userId);
     
-    console.log(variation);
+    console.log('variation', variation);
 
     variation === "video_demo" ? response += ' Here\'s a quick video to show you what I can do https://youtu.be/jvyHcjZoGJk' : null;
     twiml.message(response);
